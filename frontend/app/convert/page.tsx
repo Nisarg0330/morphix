@@ -18,7 +18,6 @@ const FORMAT_OPTIONS: Record<string, string[]> = {
 
 export default function ConvertPage() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [targetFormat, setTargetFormat] = useState("PNG");
@@ -31,17 +30,16 @@ export default function ConvertPage() {
 
   useEffect(() => {
     getCurrentUser()
-      .then(u => {
-        setUserEmail(u.signInDetails?.loginId ?? "");
-        setUserId(u.userId);
-      })
+      .then(u => setUserId(u.userId))
       .catch(() => router.push("/auth"));
   }, [router]);
 
   const handleFileSelect = useCallback((f: File) => {
     setFile(f);
-    setTargetFormat("PNG");
+    const formats = FORMAT_OPTIONS[f.type] ?? [];
+    setTargetFormat(formats[0] ?? "PNG");
     setDownloadUrl("");
+    setDownloadFileName("");
     setError("");
     setStatus("idle");
   }, []);
@@ -53,9 +51,7 @@ export default function ConvertPage() {
     if (f) handleFileSelect(f);
   }, [handleFileSelect]);
 
-  const availableFormats = file
-    ? (FORMAT_OPTIONS[file.type] ?? [])
-    : ["PNG", "JPG", "WEBP", "PDF", "GRAYSCALE"];
+  const availableFormats = file ? (FORMAT_OPTIONS[file.type] ?? []) : ["PNG", "JPG", "WEBP", "PDF", "GRAYSCALE"];
 
   async function handleConvert() {
     if (!file || !targetFormat) return;
@@ -63,21 +59,17 @@ export default function ConvertPage() {
     setStatus("uploading");
     setUploadProgress(0);
     try {
-      const { uploadUrl, s3Key } = await getPresignedUrl(
-        file.name, file.type, file.size, userId
-      );
+      const { uploadUrl, s3Key } = await getPresignedUrl(file.name, file.type, file.size, userId);
       await uploadToS3(uploadUrl, file, pct => setUploadProgress(pct));
       setStatus("converting");
       const result = await convertFile(s3Key, targetFormat.toLowerCase(), userId);
       setDownloadUrl(result.downloadUrl);
       const originalName = file.name.split(".").slice(0, -1).join(".");
-        const newExt = targetFormat.toLowerCase() === "grayscale"
-        ? file.name.split(".").pop()?.toLowerCase()
+      const newExt = targetFormat.toLowerCase() === "grayscale"
+        ? file.name.split(".").pop()?.toLowerCase() ?? "jpg"
         : targetFormat.toLowerCase();
-        setDownloadFileName(`${originalName}_morphix.${newExt}`);
+      setDownloadFileName(`${originalName}_morphix.${newExt}`);
       setStatus("done");
-
-      // Store in history
       const conversion = {
         id: Date.now().toString(),
         fileName: file.name,
@@ -94,23 +86,23 @@ export default function ConvertPage() {
       setError("Conversion failed. Please try again.");
       setStatus("error");
     }
-    
   }
+
   async function handleDownload() {
     if (!downloadUrl || !downloadFileName) return;
     try {
-        const response = await fetch(downloadUrl);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = downloadFileName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = downloadFileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
     } catch (err) {
-        console.error("Download failed:", err);
+      console.error("Download failed:", err);
     }
   }
 
@@ -128,18 +120,20 @@ export default function ConvertPage() {
     return "idle";
   };
 
+  const isConverting = status === "uploading" || status === "converting";
+
   return (
     <div style={{ minHeight: "100vh", background: C.base, fontFamily: "Inter, system-ui, sans-serif", color: C.text, display: "flex", flexDirection: "column" }}>
 
       {/* Navbar */}
-      <nav style={{
+      <nav className="nav-padding" style={{
         background: "#fff", borderBottom: "0.5px solid #E0DEEE",
         height: 56, display: "flex", alignItems: "center",
         justifyContent: "space-between", padding: "0 48px",
         position: "sticky", top: 0, zIndex: 100,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+        <div className="nav-mobile-gap" style={{ display: "flex", alignItems: "center", gap: 32 }}>
+          <Link href="/convert" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, width: 24, height: 24 }}>
               <div style={{ background: C.primary, borderRadius: 2 }} />
               <div style={{ background: C.light, borderRadius: 2, opacity: 0.6 }} />
@@ -150,7 +144,7 @@ export default function ConvertPage() {
               Morph<span style={{ color: C.accent }}>ix</span>
             </span>
           </Link>
-          <Link href="/conversions" style={{
+          <Link className="hide-mobile" href="/conversions" style={{
             fontSize: 13, fontWeight: 500, color: C.primary,
             textDecoration: "none", borderBottom: `2px solid ${C.primary}`, paddingBottom: 2,
           }}>
@@ -171,7 +165,7 @@ export default function ConvertPage() {
         </Link>
       </nav>
 
-      <main style={{ flex: 1, maxWidth: 680, width: "100%", margin: "0 auto", padding: "48px 24px 64px" }}>
+      <main className="convert-main" style={{ flex: 1, maxWidth: 680, width: "100%", margin: "0 auto", padding: "48px 24px 64px" }}>
 
         {/* Page header */}
         <div style={{ marginBottom: 32 }}>
@@ -188,14 +182,14 @@ export default function ConvertPage() {
               const state = stepState(s.key);
               return (
                 <div key={s.key} style={{ display: "flex", alignItems: "center", flex: i < steps.length - 1 ? 1 : "unset" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{
                       width: 8, height: 8, borderRadius: "50%",
                       background: state === "active" ? C.primary : state === "done" ? "#22C55E" : `${C.text}20`,
                       transition: "background 0.3s",
                     }} />
                     <span style={{
-                      fontSize: 11, fontWeight: 500, textTransform: "uppercase",
+                      fontSize: 10, fontWeight: 500, textTransform: "uppercase",
                       letterSpacing: "0.08em",
                       color: state === "active" ? C.primary : state === "done" ? "#22C55E" : `${C.text}30`,
                       transition: "color 0.3s",
@@ -204,7 +198,7 @@ export default function ConvertPage() {
                     </span>
                   </div>
                   {i < steps.length - 1 && (
-                    <div style={{ flex: 1, height: "0.5px", background: `${C.text}12`, margin: "0 16px" }} />
+                    <div style={{ flex: 1, height: "0.5px", background: `${C.text}12`, margin: "0 12px" }} />
                   )}
                 </div>
               );
@@ -239,7 +233,7 @@ export default function ConvertPage() {
               onClick={() => document.getElementById("file-input")?.click()}
               style={{
                 border: `1.5px dashed ${dragging ? C.primary : file ? C.accent : "#DDDAF5"}`,
-                borderRadius: 12, padding: "48px 24px", textAlign: "center",
+                borderRadius: 12, padding: "40px 20px", textAlign: "center",
                 cursor: "pointer", background: dragging ? C.surface : file ? `${C.surface}50` : C.base,
                 marginBottom: 24, transition: "all 0.2s",
               }}
@@ -256,11 +250,11 @@ export default function ConvertPage() {
                       <polyline points="14 2 14 8 20 8"/>
                     </svg>
                   </div>
-                  <p style={{ fontSize: 14, fontWeight: 500, color: C.text, marginBottom: 6 }}>{file.name}</p>
+                  <p style={{ fontSize: 14, fontWeight: 500, color: C.text, marginBottom: 6, wordBreak: "break-all" }}>{file.name}</p>
                   <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: `${C.text}40`, marginBottom: 14 }}>
                     {(file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
-                  <button onClick={e => { e.stopPropagation(); setFile(null); setStatus("idle"); setDownloadUrl(""); }}
+                  <button onClick={e => { e.stopPropagation(); setFile(null); setStatus("idle"); setDownloadUrl(""); setDownloadFileName(""); }}
                     style={{ background: "none", border: "none", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: `${C.text}35`, cursor: "pointer", fontFamily: "Inter, system-ui, sans-serif" }}>
                     × Remove
                   </button>
@@ -278,7 +272,7 @@ export default function ConvertPage() {
                     Drag your file here or click to browse
                   </p>
                   <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: `${C.text}40` }}>
-                    Max 50 MB · JPG, PNG, WEBP, PDF Supported
+                    Max 50 MB · JPG, PNG, WEBP, PDF
                   </p>
                 </div>
               )}
@@ -312,14 +306,12 @@ export default function ConvertPage() {
               </div>
             )}
 
-            {/* Error */}
             {error && (
               <div style={{ marginBottom: 16, padding: "11px 14px", background: "#FEF2F2", borderRadius: 8, fontSize: 13, color: "#DC2626" }}>
                 {error}
               </div>
             )}
 
-            {/* Upload progress */}
             {status === "uploading" && (
               <div style={{ marginBottom: 16 }}>
                 <div style={{ height: 3, background: C.base, borderRadius: 99, overflow: "hidden" }}>
@@ -331,13 +323,12 @@ export default function ConvertPage() {
               </div>
             )}
 
-            {/* Convert button */}
             <button onClick={handleConvert}
-              disabled={!file || !targetFormat || status === "uploading" || status === "converting"}
+              disabled={!file || !targetFormat || isConverting}
               style={{
                 width: "100%", background: C.primary, color: "#fff", border: "none",
                 borderRadius: 12, padding: "16px", fontSize: 15, fontWeight: 500,
-                cursor: !file || !targetFormat || status === "uploading" || status === "converting" ? "not-allowed" : "pointer",
+                cursor: !file || !targetFormat || isConverting ? "not-allowed" : "pointer",
                 fontFamily: "Inter, system-ui, sans-serif",
                 opacity: !file || !targetFormat ? 0.5 : 1,
                 transition: "opacity 0.2s",
@@ -348,30 +339,27 @@ export default function ConvertPage() {
                "Convert file"}
             </button>
 
-            {/* Download */}
             {status === "done" && downloadUrl && (
-            <button
-                onClick={handleDownload}
-                style={{
+              <button onClick={handleDownload} style={{
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
                 border: `1.5px solid ${C.primary}`, borderRadius: 12, padding: "14px",
                 fontSize: 14, fontWeight: 500, color: C.primary,
                 background: C.surface, width: "100%", cursor: "pointer",
                 fontFamily: "Inter, system-ui, sans-serif",
-                }}>
+              }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
                 </svg>
                 Download {downloadFileName}
-            </button>
+              </button>
             )}
           </div>
         </div>
 
         {/* Bottom metadata */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+        <div className="convert-meta" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
           {[
             { label: "Security", text: "Files are encrypted end-to-end and automatically purged from our edge nodes after 24 hours." },
             { label: "Speed", text: "Processing takes an average of 1.2s per 10MB using our serverless infrastructure." },
@@ -386,15 +374,11 @@ export default function ConvertPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer style={{ background: C.dark, padding: "24px 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span style={{ color: "#fff", fontWeight: 700, fontSize: 14 }}>Morphix</span>
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-            © 2026 Morphix. Precise Engine Architecture.
-          </span>
-        </div>
-        <div style={{ display: "flex", gap: 28 }}>
+      <footer className="convert-footer" style={{ background: C.dark, padding: "24px 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          © 2026 Morphix. Precise Engine Architecture.
+        </span>
+        <div className="footer-links" style={{ display: "flex", gap: 28 }}>
           {["Terms", "Privacy", "Documentation"].map(item => (
             <Link key={item} href="#" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(255,255,255,0.2)", textDecoration: "none" }}>
               {item}

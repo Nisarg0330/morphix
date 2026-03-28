@@ -20,60 +20,80 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   async function handleSignIn(e: React.FormEvent) {
-    e.preventDefault(); setError(""); setLoading(true);
+    e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
-        await signIn({ username: email, password });
-        router.push("/convert");
+      await signIn({ username: email, password });
+      router.push("/convert");
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Sign in failed";
-        // If already signed in, just redirect
-        if (message.includes("already a signed in user") || message.includes("already signed in")) {
+      const message = err instanceof Error ? err.message : "Sign in failed";
+      if (message.includes("already a signed in user") || message.includes("already signed in")) {
         router.push("/convert");
         return;
-        }
-        setError(message);
-    } finally { setLoading(false); }
+      }
+      setError(message);
+    } finally {
+      setLoading(false);
     }
+  }
 
   async function handleSignUp(e: React.FormEvent) {
-    e.preventDefault(); setError("");
+    e.preventDefault();
+    setError("");
     if (password !== confirmPassword) { setError("Passwords do not match"); return; }
     setLoading(true);
-    try { await signUp({ username: email, password, options: { userAttributes: { email } } }); setStep("verify"); }
-    catch (err: unknown) { setError(err instanceof Error ? err.message : "Sign up failed"); }
-    finally { setLoading(false); }
+    try {
+      await signUp({ username: email, password, options: { userAttributes: { email } } });
+      setStep("verify");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Sign up failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleVerify(e: React.FormEvent) {
-    e.preventDefault(); setError(""); setLoading(true);
+    e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
       await confirmSignUp({ username: email, confirmationCode: code });
       await signIn({ username: email, password });
       router.push("/convert");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Verification failed");
+    } finally {
+      setLoading(false);
     }
-    catch (err: unknown) { setError(err instanceof Error ? err.message : "Verification failed"); }
-    finally { setLoading(false); }
+  }
+
+  async function handleResend() {
+    try {
+      await resendSignUpCode({ username: email });
+    } catch (err) {
+      console.error("Resend failed:", err);
+    }
   }
 
   const inp: React.CSSProperties = {
     width: "100%", background: "#fff", border: `1px solid ${C.border}`,
     borderRadius: 8, padding: "13px 16px", fontSize: 14, color: C.text,
-    outline: "none", fontFamily: "Inter, system-ui, sans-serif", display: "block",
+    outline: "none", fontFamily: "Inter, system-ui, sans-serif",
+    boxSizing: "border-box" as const,
   };
-
   const lbl: React.CSSProperties = {
     display: "block", fontSize: 11, fontWeight: 500,
     textTransform: "uppercase", letterSpacing: "0.08em",
     color: `${C.text}60`, marginBottom: 8,
   };
-
   const primaryBtn: React.CSSProperties = {
     width: "100%", background: C.primary, color: "#fff", border: "none",
     borderRadius: 8, padding: "14px 16px", fontSize: 14, fontWeight: 500,
     cursor: "pointer", fontFamily: "Inter, system-ui, sans-serif",
     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+    boxSizing: "border-box" as const,
   };
-
   const outlineBtn: React.CSSProperties = {
     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
     border: `1px solid ${C.border}`, borderRadius: 8, padding: "11px 16px",
@@ -84,9 +104,9 @@ export default function AuthPage() {
   return (
     <div style={{ minHeight: "100vh", background: C.base, fontFamily: "Inter, system-ui, sans-serif", display: "flex", flexDirection: "column" }}>
 
-      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "64px 24px" }}>
+      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "64px 16px" }}>
         <div style={{ width: "100%", maxWidth: 440 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: "40px 40px 36px", boxShadow: "0 20px 40px rgba(83,74,183,0.07)" }}>
+          <div className="auth-card" style={{ background: "#fff", borderRadius: 16, padding: "40px 40px 36px", boxShadow: "0 20px 40px rgba(83,74,183,0.07)" }}>
 
             {/* Logo */}
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
@@ -108,14 +128,20 @@ export default function AuthPage() {
               <div style={{ display: "flex", borderBottom: `1px solid ${C.border}`, marginBottom: 28 }}>
                 {(["signin", "signup"] as Step[]).map(t => (
                   <button key={t} onClick={() => { setStep(t); setError(""); }}
-                    style={{ flex: 1, paddingBottom: 14, fontSize: 14, fontWeight: 500, cursor: "pointer", background: "none", border: "none", borderBottom: step === t ? `2px solid ${C.primary}` : "2px solid transparent", color: step === t ? C.primary : `${C.text}45`, fontFamily: "Inter, system-ui, sans-serif", marginBottom: -1, transition: "color 0.15s" }}>
+                    style={{
+                      flex: 1, paddingBottom: 14, fontSize: 14, fontWeight: 500,
+                      cursor: "pointer", background: "none", border: "none",
+                      borderBottom: step === t ? `2px solid ${C.primary}` : "2px solid transparent",
+                      color: step === t ? C.primary : `${C.text}45`,
+                      fontFamily: "Inter, system-ui, sans-serif",
+                      marginBottom: -1, transition: "color 0.15s",
+                    }}>
                     {t === "signin" ? "Sign in" : "Sign up"}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Error */}
             {error && (
               <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", color: "#DC2626", fontSize: 13, padding: "11px 14px", borderRadius: 8, marginBottom: 20, lineHeight: 1.5 }}>
                 {error}
@@ -165,7 +191,9 @@ export default function AuthPage() {
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>
                   <button type="button" style={outlineBtn}>
-                    <span style={{ fontWeight: 700, fontSize: 11, letterSpacing: "0.05em" }}>GOOGLE</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/>
+                    </svg>
                     <span>Google</span>
                   </button>
                   <button type="button" style={outlineBtn}>
@@ -218,15 +246,15 @@ export default function AuthPage() {
                 </div>
                 <div style={{ marginBottom: 22 }}>
                   <label style={lbl}>Verification Code</label>
-                  <input type="text" value={code} onChange={e => setCode(e.target.value)}
-                    required placeholder="123456"
+                  <input type="text" value={code} onChange={e => setCode(e.target.value.trim())}
+                    required placeholder="123456" maxLength={6}
                     style={{ ...inp, textAlign: "center", letterSpacing: "0.35em", fontSize: 22, fontWeight: 500 }} />
                 </div>
                 <button type="submit" disabled={loading}
                   style={{ ...primaryBtn, opacity: loading ? 0.65 : 1, marginBottom: 14 }}>
                   {loading ? "Verifying..." : "Verify email →"}
                 </button>
-                <button type="button" onClick={() => resendSignUpCode({ username: email })}
+                <button type="button" onClick={handleResend}
                   style={{ width: "100%", background: "none", border: "none", fontSize: 13, color: `${C.text}40`, cursor: "pointer", fontFamily: "Inter, system-ui, sans-serif", padding: "8px 0" }}>
                   Resend code
                 </button>
@@ -236,15 +264,11 @@ export default function AuthPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer style={{ background: C.dark, padding: "20px 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span style={{ color: "#fff", fontWeight: 700, fontSize: 14 }}>Morphix.</span>
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-            © 2026 Morphix. Precise Engine Architecture.
-          </span>
-        </div>
-        <div style={{ display: "flex", gap: 28 }}>
+      <footer className="auth-footer" style={{ background: C.dark, padding: "20px 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          © 2026 Morphix. Precise Engine Architecture.
+        </span>
+        <div className="footer-links" style={{ display: "flex", gap: 28 }}>
           {["Terms", "Privacy", "Documentation"].map(item => (
             <Link key={item} href="#"
               style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(255,255,255,0.2)", textDecoration: "none" }}>

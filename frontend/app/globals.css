@@ -7,3 +7,32 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ── Responsive utilities ── */
+@media (max-width: 768px) {
+  .nav-padding { padding: 0 20px !important; }
+  .hero-padding { padding-left: 24px !important; padding-right: 24px !important; padding-top: 100px !important; padding-bottom: 64px !important; }
+  .hero-h1 { font-size: 2.2rem !important; }
+  .hero-buttons { flex-direction: column !important; align-items: stretch !important; }
+  .hero-buttons a { text-align: center !important; justify-content: center !important; }
+  .formats-strip { padding: 12px 20px !important; gap: 14px !important; flex-wrap: wrap !important; }
+  .features-section { padding: 60px 24px !important; }
+  .features-header { flex-direction: column !important; gap: 8px !important; align-items: flex-start !important; }
+  .features-grid { grid-template-columns: 1fr !important; }
+  .split-grid { grid-template-columns: 1fr !important; padding: 48px 24px !important; gap: 32px !important; }
+  .footer-inner { flex-direction: column !important; gap: 16px !important; padding: 24px 20px !important; }
+  .footer-links { gap: 20px !important; flex-wrap: wrap !important; }
+  .nav-links { gap: 16px !important; }
+  .convert-main { padding: 32px 16px 48px !important; }
+  .convert-meta { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .convert-footer { flex-direction: column !important; gap: 12px !important; padding: 20px 16px !important; }
+  .conversions-main { padding: 32px 16px 48px !important; }
+  .conversions-header { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  .conversions-table-header { display: none !important; }
+  .conversions-row { grid-template-columns: 1fr !important; gap: 12px !important; padding: 16px !important; }
+  .profile-main { padding: 32px 16px !important; }
+  .auth-footer { flex-direction: column !important; gap: 12px !important; padding: 20px 16px !important; }
+  .auth-card { padding: 28px 20px 24px !important; }
+  .hide-mobile { display: none !important; }
+  .nav-mobile-gap { gap: 12px !important; }
+}

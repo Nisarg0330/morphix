@@ -1,12 +1,24 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getCurrentUser } from "aws-amplify/auth";
 import Link from "next/link";
 import { C } from "@/lib/constants";
 
 export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    getCurrentUser()
+      .then(() => router.replace("/convert"))
+      .catch(() => {}); // not logged in, stay on landing
+  }, [router]);
   return (
     <div style={{ fontFamily: "Inter, system-ui, sans-serif", color: C.text, overflowX: "hidden" }}>
 
       {/* Navbar */}
-      <nav style={{
+      <nav className="nav-padding" style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
         background: "#fff", borderBottom: "0.5px solid #E0DEEE",
         height: 56, display: "flex", alignItems: "center",
@@ -33,12 +45,12 @@ export default function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section style={{
+      <section className="hero-padding" style={{
         background: C.dark, paddingTop: 140, paddingBottom: 100,
         paddingLeft: 48, paddingRight: 48,
         textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center",
       }}>
-        <h1 style={{ fontSize: "3.5rem", fontWeight: 500, color: "#fff", lineHeight: 1.1, marginBottom: 20 }}>
+        <h1 className="hero-h1" style={{ fontSize: "3.5rem", fontWeight: 500, color: "#fff", lineHeight: 1.1, marginBottom: 20 }}>
           Transform anything.<br />
           <span style={{ color: C.accent }}>Instantly.</span>
         </h1>
@@ -46,7 +58,7 @@ export default function HomePage() {
           Upload a file, pick a format, download the result in seconds.
           Powered by AWS Lambda for production-grade speed.
         </p>
-        <div style={{ display: "flex", gap: 12, marginBottom: 48 }}>
+        <div className="hero-buttons" style={{ display: "flex", gap: 12, marginBottom: 48 }}>
           <Link href="/auth" style={{
             background: C.primary, color: "#fff", padding: "12px 28px",
             borderRadius: 8, fontWeight: 500, fontSize: 14, textDecoration: "none",
@@ -94,7 +106,7 @@ export default function HomePage() {
       </section>
 
       {/* Formats strip */}
-      <section style={{
+      <section className="formats-strip" style={{
         background: C.low, borderBottom: "0.5px solid #E0DEEE",
         padding: "14px 48px", display: "flex", alignItems: "center", gap: 28,
       }}>
@@ -107,9 +119,9 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section id="features" style={{ background: "#fff", padding: "96px 48px" }}>
+      <section id="features" className="features-section" style={{ background: "#fff", padding: "96px 48px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 64 }}>
+          <div className="features-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 64 }}>
             <div style={{ maxWidth: 460 }}>
               <h2 style={{ fontSize: "1.75rem", fontWeight: 500, color: C.text, lineHeight: 1.3, marginBottom: 12 }}>
                 Precision-engineered for file processing.
@@ -122,7 +134,7 @@ export default function HomePage() {
               Core Architecture
             </span>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+          <div className="features-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
             {[
               { icon: "⚡", title: "Lightning fast", desc: "Execution happens in serverless warm-pools, meaning your conversion starts the millisecond you hit upload.", meta: "AVERAGE EXECUTION  140MS" },
               { icon: "🛡", title: "Secure by default", desc: "Files are processed in ephemeral containers and wiped instantly after download. We never store your data.", meta: "ENCRYPTION  AES-256" },
@@ -143,9 +155,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Split section — wave image as rounded box */}
+      {/* Split section */}
       <div style={{ background: "#F8F7FF" }}>
-        <div style={{
+        <div className="split-grid" style={{
           maxWidth: 1100, margin: "0 auto",
           padding: "80px 48px",
           display: "grid",
@@ -154,25 +166,17 @@ export default function HomePage() {
           alignItems: "center",
         }}>
           {/* Wave image box */}
-          <div style={{
-            borderRadius: 20,
-            overflow: "hidden",
-            position: "relative",
-            aspectRatio: "1 / 1",
-          }}>
+          <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", aspectRatio: "1 / 1" }}>
             <img
               src="/wave.png"
               alt="Engine visualization"
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
             />
-            {/* Engine status card overlay */}
             <div style={{
-              position: "absolute",
-              bottom: 20, left: 20,
+              position: "absolute", bottom: 20, left: 20,
               background: "rgba(8,6,18,0.88)",
               border: "0.5px solid rgba(255,255,255,0.1)",
-              borderRadius: 10,
-              padding: "12px 18px",
+              borderRadius: 10, padding: "12px 18px",
             }}>
               <p style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.25)", fontWeight: 500, marginBottom: 12 }}>
                 Engine Status
@@ -223,7 +227,7 @@ export default function HomePage() {
       </div>
 
       {/* Footer */}
-      <footer style={{
+      <footer className="footer-inner" style={{
         background: C.dark, padding: "28px 48px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
@@ -240,10 +244,10 @@ export default function HomePage() {
             </span>
           </div>
           <p style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-            © 2024 Morphix. Precise Engine Architecture.
+            © 2026 Morphix. Precise Engine Architecture.
           </p>
         </div>
-        <div style={{ display: "flex", gap: 32 }}>
+        <div className="footer-links" style={{ display: "flex", gap: 32 }}>
           {["Terms", "Privacy", "Documentation"].map(item => (
             <Link key={item} href="#" style={{
               fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em",
