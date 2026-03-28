@@ -6,6 +6,7 @@ from aws_cdk import (
     aws_apigatewayv2_integrations as integrations,
     aws_apigatewayv2_authorizers as authorizers,
     aws_cognito as cognito,
+    aws_iam as iam,
 )
 from constructs import Construct
 
@@ -79,8 +80,13 @@ class MorphixStack(Stack):
                 "REGION": self.region,
             }
         )
-        bucket.grant_put(presign_fn)
-        bucket.grant_read(presign_fn)
+
+        # Presign needs to generate pre-signed URLs — requires read + write
+        bucket.grant_read_write(presign_fn)
+        presign_fn.add_to_role_policy(iam.PolicyStatement(
+            actions=["s3:GetObject", "s3:PutObject"],
+            resources=[f"{bucket.bucket_arn}/*"],
+        ))
 
         # ─── Pillow Layer ─────────────────────────────────────────────
         pillow_layer = _lambda.LayerVersion(
@@ -104,6 +110,18 @@ class MorphixStack(Stack):
                 "REGION": self.region,
             }
         )
+
+        # Convert needs full read + write access to all objects
+        bucket.grant_read_write(convert_fn)
+        convert_fn.add_to_role_policy(iam.PolicyStatement(
+            actions=[
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:GetObjectAcl",
+            ],
+            resources=[f"{bucket.bucket_arn}/*"],
+        ))
 
         # ─── API Gateway ─────────────────────────────────────────────
         authorizer = authorizers.HttpUserPoolAuthorizer(

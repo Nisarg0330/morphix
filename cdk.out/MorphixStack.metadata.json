@@ -179,6 +179,12 @@
       "data": "PresignFunctionServiceRoleDefaultPolicy6338BD22"
     }
   ],
+  "/MorphixStack/ConvertFunction/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ConvertFunctionServiceRoleDefaultPolicy4F6D598C"
+    }
+  ],
   "/MorphixStack/MorphixApi/POST--presign/PresignIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
