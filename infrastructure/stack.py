@@ -82,6 +82,14 @@ class MorphixStack(Stack):
         bucket.grant_put(presign_fn)
         bucket.grant_read(presign_fn)
 
+        # ─── Pillow Layer ─────────────────────────────────────────────
+        pillow_layer = _lambda.LayerVersion(
+            self, "PillowLayer",
+            code=_lambda.Code.from_asset("backend/layers/pillow"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_11],
+            description="Pillow image processing library for Morphix",
+        )
+
         # ─── Lambda: Convert ─────────────────────────────────────────
         convert_fn = _lambda.Function(
             self, "ConvertFunction",
@@ -90,12 +98,12 @@ class MorphixStack(Stack):
             code=_lambda.Code.from_asset("backend/convert"),
             timeout=Duration.seconds(60),
             memory_size=512,
+            layers=[pillow_layer],
             environment={
                 "BUCKET_NAME": bucket.bucket_name,
                 "REGION": self.region,
             }
         )
-        bucket.grant_read_write(convert_fn)
 
         # ─── API Gateway ─────────────────────────────────────────────
         authorizer = authorizers.HttpUserPoolAuthorizer(

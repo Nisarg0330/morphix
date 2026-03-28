@@ -83,6 +83,12 @@
       "data": "PresignFunction7C4B21EC"
     }
   ],
+  "/MorphixStack/PillowLayer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PillowLayer821F82C9"
+    }
+  ],
   "/MorphixStack/ConvertFunction/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -171,12 +177,6 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "PresignFunctionServiceRoleDefaultPolicy6338BD22"
-    }
-  ],
-  "/MorphixStack/ConvertFunction/ServiceRole/DefaultPolicy/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ConvertFunctionServiceRoleDefaultPolicy4F6D598C"
     }
   ],
   "/MorphixStack/MorphixApi/POST--presign/PresignIntegration/Resource": [

@@ -411,7 +411,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
      },
-     "S3Key": "2f3c52a15942862318fa830d160edf66744e00701bcb4bd589f28c2a92ee71f7.zip"
+     "S3Key": "93997dd50b62069f6b856add23ad612a64b02375db4240d0f2e854c97bd844bf.zip"
     },
     "Environment": {
      "Variables": {
@@ -438,9 +438,30 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MorphixStack/PresignFunction/Resource",
-    "aws:asset:path": "asset.2f3c52a15942862318fa830d160edf66744e00701bcb4bd589f28c2a92ee71f7",
+    "aws:asset:path": "asset.93997dd50b62069f6b856add23ad612a64b02375db4240d0f2e854c97bd844bf",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
+   }
+  },
+  "PillowLayer821F82C9": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "CompatibleRuntimes": [
+     "python3.11"
+    ],
+    "Content": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "c19ef5fd89bc8be267d214f1b53da69fbb7e96fd5d45a8a795cd9766379b5f5b.zip"
+    },
+    "Description": "Pillow image processing library for Morphix"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MorphixStack/PillowLayer/Resource",
+    "aws:asset:path": "asset.c19ef5fd89bc8be267d214f1b53da69fbb7e96fd5d45a8a795cd9766379b5f5b",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
    }
   },
   "ConvertFunctionServiceRoleC819E25D": {
@@ -477,62 +498,6 @@
     "aws:cdk:path": "MorphixStack/ConvertFunction/ServiceRole/Resource"
    }
   },
-  "ConvertFunctionServiceRoleDefaultPolicy4F6D598C": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "s3:GetObject*",
-        "s3:GetBucket*",
-        "s3:List*",
-        "s3:DeleteObject*",
-        "s3:PutObject",
-        "s3:PutObjectLegalHold",
-        "s3:PutObjectRetention",
-        "s3:PutObjectTagging",
-        "s3:PutObjectVersionTagging",
-        "s3:Abort*"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "MorphixBucketDFB0055D",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "MorphixBucketDFB0055D",
-             "Arn"
-            ]
-           },
-           "/*"
-          ]
-         ]
-        }
-       ]
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "ConvertFunctionServiceRoleDefaultPolicy4F6D598C",
-    "Roles": [
-     {
-      "Ref": "ConvertFunctionServiceRoleC819E25D"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "MorphixStack/ConvertFunction/ServiceRole/DefaultPolicy/Resource"
-   }
-  },
   "ConvertFunctionBC721F9E": {
    "Type": "AWS::Lambda::Function",
    "Properties": {
@@ -540,7 +505,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
      },
-     "S3Key": "8224a363d22ade4dae8f40bb7b369b4ae46a10ee4c84da3f28c0e9d5a0bae846.zip"
+     "S3Key": "1253722a4e04cd2ad0660452daf7cfd1293b1e5846a571ce1a59fed157332632.zip"
     },
     "Environment": {
      "Variables": {
@@ -551,6 +516,11 @@
      }
     },
     "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "PillowLayer821F82C9"
+     }
+    ],
     "MemorySize": 512,
     "Role": {
      "Fn::GetAtt": [
@@ -562,12 +532,11 @@
     "Timeout": 60
    },
    "DependsOn": [
-    "ConvertFunctionServiceRoleDefaultPolicy4F6D598C",
     "ConvertFunctionServiceRoleC819E25D"
    ],
    "Metadata": {
     "aws:cdk:path": "MorphixStack/ConvertFunction/Resource",
-    "aws:asset:path": "asset.8224a363d22ade4dae8f40bb7b369b4ae46a10ee4c84da3f28c0e9d5a0bae846",
+    "aws:asset:path": "asset.1253722a4e04cd2ad0660452daf7cfd1293b1e5846a571ce1a59fed157332632",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -808,7 +777,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VQQU7DMBB8S3N2TUngwi0UITg1SsUJocpNl3TbxI6865Zi5e/IsdoGbpx2xjM7HjuV6d29nE3UkabVZj9tcC39klW1F+pIK0+Z9I+u2gOL+aeO6N0nLX6hTh6S8VrwUyYHiWS05o7NEzTAsFjvoGJK+g8RpcI0WJ2uqZH/IzsuLFkxtKDH0Y+KoBeVqTWykf6NwBbGNOGuCz6DeYOgeSzFk140ql1vlPTPTleMRgfPGBdgWyRCo3uBqpW+NA0EYZjX50XUC8pWigiYZB6GUB3WiuGoTodU+hfmLu8wLIQR6JJVPQRGEI5K4ziiV81QW3Uu84defbnjrbH4DXaIvrC+F3NHbNoSyDhbxeYX/EsqrDngBmz4VzGUD41Q12Fn4bhz3IvixFujbzJ5m8rZZEeIU+s0YwuyjPMH4Snev2wCAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VQQU7DMBB8S3N2DSRw4dYWIZCQGqWCC0KVmy7ptokdedctIcrfkWOalt447Yxndjx2LOPbO3k9Ugca5+vduMSVbBes8p1QB1q2lMh26vIdsJh96oDe26jCL9TRfXS+5v2UyF4iGawTx+YBSmCYr7aQM0XdhwhSakrMm1Nq4P/IDgsLVgwV6PPoqSLoRG4KjWxk+0pgU2NKf9eAj2BWImg+l8JJJ0pVrdZKto9O54xGe8+AX1QD9g0s/QqXPAVbIXnWCVSVbDNTghf6eXp7QJ2gZKmIgElO/BCqxkIxHFSzj2X7xFxPavQLfni6YFX0gQH4o8w4DuhZMxRWHVtf0JNv4nhjLH6D7aMH1nVi5ohNlQEZZ/PQfMB/pNSaPa7B+k8XfXnfCHXhd+aOa8edSBveGH2VyJtYXo+2hDi2TjNWILMwfwB+DW4BiQIAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "MorphixStack/CDKMetadata/Default"
