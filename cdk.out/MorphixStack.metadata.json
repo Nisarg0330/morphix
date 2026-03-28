@@ -1,0 +1,194 @@
+{
+  "/MorphixStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+      "data": true
+    }
+  ],
+  "/MorphixStack/ApiUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiUrl"
+    }
+  ],
+  "/MorphixStack/BucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketName"
+    }
+  ],
+  "/MorphixStack/UserPoolId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolId"
+    }
+  ],
+  "/MorphixStack/UserPoolClientId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolClientId"
+    }
+  ],
+  "/MorphixStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/MorphixStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/MorphixStack/MorphixBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixBucketDFB0055D"
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/MorphixStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+    }
+  ],
+  "/MorphixStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+    }
+  ],
+  "/MorphixStack/MorphixUserPool/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixUserPool74F37454"
+    }
+  ],
+  "/MorphixStack/MorphixUserPoolClient/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixUserPoolClient7EF013FD"
+    }
+  ],
+  "/MorphixStack/PresignFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PresignFunction7C4B21EC"
+    }
+  ],
+  "/MorphixStack/ConvertFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ConvertFunctionBC721F9E"
+    }
+  ],
+  "/MorphixStack/MorphixApi/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiD4F6947D"
+    }
+  ],
+  "/MorphixStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/MorphixStack/MorphixBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixBucketPolicyD449E5E6"
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/MorphixStack/MorphixBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixBucketAutoDeleteObjectsCustomResourceC09BDBA2"
+    }
+  ],
+  "/MorphixStack/PresignFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PresignFunctionServiceRole6C7E924A"
+    }
+  ],
+  "/MorphixStack/ConvertFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ConvertFunctionServiceRoleC819E25D"
+    }
+  ],
+  "/MorphixStack/MorphixApi/DefaultStage/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiDefaultStageE8D638EC"
+    }
+  ],
+  "/MorphixStack/MorphixApi/POST--presign/PresignIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiPOSTpresignPresignIntegrationPermission580D41DF"
+    }
+  ],
+  "/MorphixStack/MorphixApi/POST--presign/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiPOSTpresign3E8F0C24"
+    }
+  ],
+  "/MorphixStack/MorphixApi/MorphixAuthorizer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiMorphixAuthorizerF3E2CCA2"
+    }
+  ],
+  "/MorphixStack/MorphixApi/POST--convert/ConvertIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiPOSTconvertConvertIntegrationPermissionBD608E40"
+    }
+  ],
+  "/MorphixStack/MorphixApi/POST--convert/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiPOSTconvert4F16E5F4"
+    }
+  ],
+  "/MorphixStack/PresignFunction/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PresignFunctionServiceRoleDefaultPolicy6338BD22"
+    }
+  ],
+  "/MorphixStack/ConvertFunction/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ConvertFunctionServiceRoleDefaultPolicy4F6D598C"
+    }
+  ],
+  "/MorphixStack/MorphixApi/POST--presign/PresignIntegration/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiPOSTpresignPresignIntegrationFCD13600"
+    }
+  ],
+  "/MorphixStack/MorphixApi/POST--convert/ConvertIntegration/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MorphixApiPOSTconvertConvertIntegration2E0BF431"
+    }
+  ]
+}

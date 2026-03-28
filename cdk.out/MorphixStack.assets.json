@@ -1,0 +1,66 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6": {
+      "displayName": "MorphixStack/Custom::S3AutoDeleteObjectsCustomResourceProvider Code",
+      "source": {
+        "path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-us-east-1-e650c2de": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    },
+    "2f3c52a15942862318fa830d160edf66744e00701bcb4bd589f28c2a92ee71f7": {
+      "displayName": "PresignFunction/Code",
+      "source": {
+        "path": "asset.2f3c52a15942862318fa830d160edf66744e00701bcb4bd589f28c2a92ee71f7",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-us-east-1-5332949a": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "2f3c52a15942862318fa830d160edf66744e00701bcb4bd589f28c2a92ee71f7.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    },
+    "8224a363d22ade4dae8f40bb7b369b4ae46a10ee4c84da3f28c0e9d5a0bae846": {
+      "displayName": "ConvertFunction/Code",
+      "source": {
+        "path": "asset.8224a363d22ade4dae8f40bb7b369b4ae46a10ee4c84da3f28c0e9d5a0bae846",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-us-east-1-055d5224": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "8224a363d22ade4dae8f40bb7b369b4ae46a10ee4c84da3f28c0e9d5a0bae846.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    },
+    "7e6a89745b539787c7189d4bb4824099b609ac1d0ddf202295863ad5bb9e65c8": {
+      "displayName": "MorphixStack Template",
+      "source": {
+        "path": "MorphixStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-us-east-1-213b24f8": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "7e6a89745b539787c7189d4bb4824099b609ac1d0ddf202295863ad5bb9e65c8.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
